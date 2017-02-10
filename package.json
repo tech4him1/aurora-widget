@@ -1,6 +1,6 @@
 {
   "name": "aurora-widget",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A destop widget of the aurora forecast.",
   "main": "index.js",
   "scripts": {
@@ -8,5 +8,13 @@
   },
   "author": "tech4him1",
   "license": "UNLICENSED",
-  "os": [ "win64", "win32" ]
+  "os": [
+    "win64",
+    "win32"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "nw": "^0.20.1",
+    "throttleit": "^1.0.0"
+  }
 }
