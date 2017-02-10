@@ -1,6 +1,6 @@
 {
   "name": "aurora-widget",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A destop widget of the aurora forecast.",
   "main": "index.js",
   "scripts": {
