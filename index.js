@@ -1,9 +1,10 @@
-var $ = require("jquery");
+const $ = require("jquery");
 
 nw.Window.open('widget.html', {
   "id": "widget", // Add an ID to remember position.
   "show_in_taskbar": false,
   "frame": false,
+  "show": false,
   "width": 616,
   "height": 616,
   "max_width": 616,
@@ -12,6 +13,8 @@ nw.Window.open('widget.html', {
   "min_height": 154,
 }, (win)=>{
   loadForecast(win.window);
+  win.show();
+  setInterval(()=>{loadForecast(win.window)}, 60*1000); // Update forecast every minute.
 });
 
 function loadForecast(widget) {
@@ -23,16 +26,17 @@ function loadForecast(widget) {
     widget.find( "#auroraMap" ).attr("src", "http://services.swpc.noaa.gov/experimental/images/animations/auroral-forecast-north/latest.jpg?" + new Date().getTime());
 
     // Add latest Kp index.
-    $.get('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json').then(kpIndex => {
-      // Parse the Kp Index list.  We only need the newest (last) value.
-      var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0].estimated_kp;
-      widget.find( "#kpIndex" )
-        .css({
-          "color": getKpColor(latestKpIndex),
-          "animation-duration": ((10 - latestKpIndex) / 2) + "s" // Flash text when Kp index is high.
-        })
-        .text(latestKpIndex + " Kp");
-    });
+    $.getJSON('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json', { "timeout": 15*1000 }) // Timeout after 15 seconds since main interval in 60 seconds.
+      .then(kpIndex => {
+        // Parse the Kp Index list.  We only need the newest (last) value.
+        var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0].estimated_kp;
+        widget.find( "#kpIndex" )
+          .css({
+            "color": getKpColor(latestKpIndex),
+            "animation-duration": ((10 - latestKpIndex) / 2) + "s" // Flash text when Kp index is high.
+          })
+          .text(latestKpIndex + " Kp");
+      });
 
   });
 }
