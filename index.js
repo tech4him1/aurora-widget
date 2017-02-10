@@ -24,7 +24,7 @@ function loadForecast(widget) {
   widget.ready(()=>{
 
     // Add latest aurora map.  We have to use timestamp to override the browser cache.
-    widget.find( "#auroraMap" ).attr("src", "http://services.swpc.noaa.gov/experimental/images/animations/auroral-forecast-north/latest.jpg?" + new Date().getTime());
+    widget.find( "#auroraMap" ).attr("src", "http://services.swpc.noaa.gov/images/animations/ovation-north/latest.png?" + new Date().getTime());
 
     // Add latest Kp index.
     $.getJSON('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json', { "timeout": 15*1000 }) // Timeout after 15 seconds since main interval in 60 seconds.
