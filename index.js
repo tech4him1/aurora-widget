@@ -4,8 +4,12 @@ nw.Window.open('widget.html', {
   "id": "widget", // Add an ID to remember position.
   "show_in_taskbar": false,
   "frame": false,
-  "width": 600,
-  "height": 600
+  "width": 616,
+  "height": 616,
+  "max_width": 616,
+  "max_height": 616,
+  "min_width": 154,
+  "min_height": 154,
 }, (win)=>{
   loadForecast(win.window);
 });
@@ -16,17 +20,18 @@ function loadForecast(widget) {
   widget.ready(()=>{
 
     // Add latest aurora map.  We have to use timestamp to override the browser cache.
-    widget.find( "#auroraMap" )
-      .attr("src", "http://services.swpc.noaa.gov/experimental/images/animations/auroral-forecast-north/latest.jpg?" + new Date().getTime())
-      .on("load", ()=>{
-    // weave your magic here.
-      });
+    widget.find( "#auroraMap" ).attr("src", "http://services.swpc.noaa.gov/experimental/images/animations/auroral-forecast-north/latest.jpg?" + new Date().getTime());
 
     // Add latest Kp index.
     $.get('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json').then(kpIndex => {
       // Parse the Kp Index list.  We only need the newest (last) value.
-      var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0];
-      widget.find( "#kpIndex" ).text(latestKpIndex.estimated_kp);
+      var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0].estimated_kp;
+      widget.find( "#kpIndex" )
+        .css({
+          "color": getKpColor(latestKpIndex),
+          "animation-duration": ((10 - latestKpIndex) / 2) + "s" // Flash text when Kp index is high.
+        })
+        .text(latestKpIndex + " Kp");
     });
 
   });
@@ -52,4 +57,11 @@ function parseKp(kpIndexHist) {
     parsedKpIndexHist[i-1] = thisParsedKpIndex;
   }
   return parsedKpIndexHist;
+}
+
+function getKpColor(kpIndex) {
+  let hueBase = 120 / 7;
+  var hue = 120 - (hueBase * kpIndex); // The highest should have an hue of 0 (red).
+  var lightness = 35 + (kpIndex * 2);
+  return "hsl(" + hue + ", 100%, " + lightness + "%)";
 }
