@@ -33,10 +33,10 @@ function loadForecast(widget) {
         var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0].estimated_kp;
         widget.find( "#kpIndex" )
           .css({
-            "color": getKpColor(latestKpIndex),
-            "animation-duration": ((10 - latestKpIndex) / 2) + "s" // Flash text when Kp index is high.
+            "color": getKpColor(Math.round(latestKpIndex)),
+            "animation-duration": ((10 - Math.round(latestKpIndex)) / 2) + "s" // Flash text when Kp index is high.
           })
-          .text(latestKpIndex + " Kp");
+          .text(Math.round(latestKpIndex) + " Kp");
       });
 
   });
