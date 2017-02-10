@@ -3,6 +3,7 @@ const $ = require("jquery");
 nw.Window.open('widget.html', {
   "id": "widget", // Add an ID to remember position.
   "show_in_taskbar": false,
+  "always_on_top": true,
   "frame": false,
   "show": false,
   "width": 616,
