@@ -6,6 +6,9 @@
   "scripts": {
     "start": "nw"
   },
+  "bin": {
+    "aurora-widget": "start.js"
+  },
   "author": "tech4him1",
   "license": "UNLICENSED",
   "os": [
