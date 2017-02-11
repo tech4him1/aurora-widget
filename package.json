@@ -1,6 +1,6 @@
 {
   "name": "aurora-widget",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A live destop widget of the aurora forecast.",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "bin": {
     "aurora-widget": "start.js"
   },
-  "author": "tech4him1",
-  "license": "UNLICENSED",
+  "author": "tech4him",
+  "license": "BSD-3-Clause",
   "os": [
     "win64",
     "win32"
