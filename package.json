@@ -9,8 +9,8 @@
   "bin": {
     "aurora-widget": "start.js"
   },
-  "author": "tech4him1",
-  "license": "UNLICENSED",
+  "author": "tech4him",
+  "license": "BSD-3-Clause",
   "os": [
     "win64",
     "win32"
