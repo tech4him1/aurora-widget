@@ -16,7 +16,6 @@
     "win32"
   ],
   "dependencies": {
-    "nw": "^0.20.1",
-    "throttleit": "^1.0.0"
+    "nw": "^0.20.1"
   }
 }
