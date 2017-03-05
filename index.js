@@ -1,5 +1,3 @@
-const $ = require("jquery");
-
 nw.Window.open('widget.html', {
   "id": "widget", // Add an ID to remember position.
   "show_in_taskbar": false,
@@ -19,24 +17,20 @@ nw.Window.open('widget.html', {
 });
 
 function loadForecast(widget) {
-  // Make widget document object a jQuery object.
-  widget = $( widget.document );
-  widget.ready(()=>{
+  widget.document.addEventListener("DOMContentLoaded", ()=>{
 
     // Add latest aurora map.  We have to use timestamp to override the browser cache.
-    widget.find( "#auroraMap" ).attr("src", "http://services.swpc.noaa.gov/images/animations/ovation-north/latest.png?" + new Date().getTime());
+    widget.document.getElementById( "auroraMap" ).setAttribute("src", "http://services.swpc.noaa.gov/images/animations/ovation-north/latest.png?" + new Date().getTime());
 
     // Add latest Kp index.
-    $.getJSON('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json', { "timeout": 15*1000 }) // Timeout after 15 seconds since main interval in 60 seconds.
-      .then(kpIndex => {
+    Promise.race([ fetch('http://services.swpc.noaa.gov/products/noaa-estimated-planetary-k-index-1-minute.json'), timeoutPromise(15*1000) ]) // Timeout after 15 seconds since main interval in 60 seconds.
+      .then(r => r.json()).then(kpIndex => {
         // Parse the Kp Index list.  We only need the newest (last) value.
         var latestKpIndex = parseKp([[kpIndex[0], kpIndex[kpIndex.length-1]]])[0].estimated_kp;
-        widget.find( "#kpIndex" )
-          .css({
-            "color": getKpColor(Math.round(latestKpIndex)),
-            "animation-duration": ((10 - Math.round(latestKpIndex)) / 2) + "s" // Flash text when Kp index is high.
-          })
-          .text(Math.round(latestKpIndex) + " Kp");
+        const kpIndexEle = widget.document.getElementById( "kpIndex" );
+        kpIndexEle.style.color = getKpColor(Math.round(latestKpIndex));
+        kpIndexEle.style.animationDuration = ((10 - Math.round(latestKpIndex)) / 2) + "s"; // Flash text when Kp index is high.
+        kpIndexEle.innerText = Math.round(latestKpIndex) + " Kp";
       });
 
   });
@@ -69,4 +63,10 @@ function getKpColor(kpIndex) {
   var hue = 120 - (hueBase * kpIndex); // The highest should have an hue of 0 (red).
   var lightness = 35 + (kpIndex * 2);
   return "hsl(" + hue + ", 100%, " + lightness + "%)";
+}
+
+function timeoutPromise(time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(reject, time);
+  });
 }
